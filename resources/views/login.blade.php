@@ -1,4 +1,3 @@
-
 @extends('layout')
 @section('title', 'Login')
 @section('content')
@@ -10,22 +9,34 @@
                         Autenticação do Eleitor
                     </div>
                     <div class="card-body" style="background-color:#d3d3d3;">
+
+                        @if ($errors->any())
+                            <div class="alert alert-danger">
+                                <ul class="mb-0">
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+
                         <div class="offset-2 col-8">
-                            <form action="{{ route('escolhaDiretor') }}" method="GET">
+                            <form action="{{ route('autenticar') }}" method="POST">
+                                @csrf
                                 <div class="mb-3">
                                     <label for="cpf" class="form-label">CPF</label>
-                                    <input type="text" name="cpf" class="form-control" id="cpf" readonly>
+                                    <input type="text" name="cpf" class="form-control" id="cpf" value="{{ old('cpf') }}">
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="telefone" class="form-label">Senha</label>
-                                    <input type="text" name="senha" class="form-control" id="senha" readonly>
+                                    <label for="senha" class="form-label">Senha</label>
+                                    <input type="password" name="senha" class="form-control" id="senha">
                                 </div>
-                                
+
                                 <div class="d-flex flex-column align-items-start">
-                                <a href="{{ route('loginAdm') }}" class="btn btn-link">Acessar área do Administrador</a>
-                                <button type="submit" class="btn btn-primary ">Acessar</button>
-                            </div>
+                                    <a href="{{ route('loginAdm') }}" class="btn btn-link">Acessar área do Administrador</a>
+                                    <button type="submit" class="btn btn-primary">Acessar</button>
+                                </div>
                             </form>
                         </div>
 
@@ -34,5 +45,4 @@
             </div>
         </div>
     </section>
-
-        @endsection
+@endsection

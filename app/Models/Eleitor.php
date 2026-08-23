@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Eleitor extends Model
 {
+     protected $table = 'eleitores';
+
     protected $fillable = ['matricula', 'tipo', 'senha', 'votou', 'pessoa_id', 'escola_id'];
 
     public function pessoa()

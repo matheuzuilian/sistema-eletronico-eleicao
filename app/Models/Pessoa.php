@@ -8,6 +8,9 @@ class Pessoa extends Model
 {
     protected $fillable = ['nome', 'email', 'cpf', 'data_nascimento'];
 
+    protected $casts = [
+        'data_nascimento' => 'date',
+    ];
     public function administrador()
     {
         return $this->hasOne(Administrador::class);

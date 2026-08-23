@@ -1,4 +1,3 @@
-
 @extends('layout')
 @section('title', 'Login Administrador')
 @section('content')
@@ -10,22 +9,33 @@
                         Autenticação do Administrador
                     </div>
                     <div class="card-body" style="background-color:#d3d3d3;">
+
+                        @if ($errors->any())
+                            <div class="alert alert-danger">
+                                <ul class="mb-0">
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+
                         <div class="offset-2 col-8">
-                            <form action="{{ route('opcaoAdm') }}" method="GET">
+                            <form action="{{ route('autenticarAdm') }}" method="POST">
                                 @csrf
                                 <div class="mb-3">
                                     <label for="cpf" class="form-label">CPF</label>
-                                    <input type="text" name="cpf" class="form-control" id="cpf" readonly>
+                                    <input type="text" name="cpf" class="form-control" id="cpf" value="{{ old('cpf') }}">
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="telefone" class="form-label">Senha</label>
-                                    <input type="password" name="senha" class="form-control" id="senha" readonly>
+                                    <label for="senha" class="form-label">Senha</label>
+                                    <input type="password" name="senha" class="form-control" id="senha">
                                 </div>
-                                
+
                                 <div class="d-flex flex-column align-items-start">
-                                <button type="submit" class="btn btn-primary ">Acessar</button>
-                            </div>
+                                    <button type="submit" class="btn btn-primary">Acessar</button>
+                                </div>
                             </form>
                         </div>
 
@@ -34,5 +44,4 @@
             </div>
         </div>
     </section>
-
-        @endsection
+@endsection
