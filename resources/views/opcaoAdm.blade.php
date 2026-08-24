@@ -1,3 +1,4 @@
+
 @extends('layout')
 @section('title', 'Opções do Administrador')
 @section('content')
