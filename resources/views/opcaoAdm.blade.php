@@ -1,4 +1,3 @@
-
 @extends('layout')
 @section('title', 'Opções do Administrador')
 @section('content')
@@ -53,6 +52,15 @@
                 </a>
             </div>
 
+            <div class="col-md-6 mb-4">
+                <a href="{{ route('gerenciarChapa') }}" class="text-decoration-none text-dark">
+                    <div class="card h-100" style="background-color:#d3d3d3;">
+                        <img src="{{ asset('images/chapa.png') }}" alt="Gerenciar Chapas"
+                            class="img-candidato mx-auto d-block">
+                        <h4 class="text-center mt-2">Gerenciar Chapas</h4>
+                    </div>
+                </a>
+            </div>
         </div>
     </section>
 @endsection

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Candidato;
+use App\Models\Chapa;
 use App\Models\Eleicao;
 use App\Models\Eleitor;
 use App\Models\Voto;
@@ -18,48 +18,27 @@ class VotoController extends Controller
             ->firstOrFail();
     }
 
-    public function escolhaDiretor()
+    public function escolhaChapa()
     {
         $eleitor = Eleitor::findOrFail(session('eleitor_id'));
         $eleicao = $this->eleicaoAtiva($eleitor);
 
-        $candidatos = Candidato::with('pessoa')
+        $chapas = Chapa::with('diretor.pessoa', 'coordenador1.pessoa', 'coordenador2.pessoa')
             ->where('eleicao_id', $eleicao->id)
-            ->where('cargo', 'diretor')
             ->get();
 
-        return view('escolhaDiretor', compact('candidatos'));
+        return view('escolhaChapa', compact('chapas'));
     }
 
-    public function confirmarVotoDiretor(Request $request)
+    public function confirmarVotoChapa(Request $request)
     {
-        $request->validate(['candidato_id' => 'required|exists:candidatos,id']);
-        session(['voto_diretor_id' => $request->candidato_id]);
+        $request->validate(['chapa_id' => 'required|exists:chapas,id']);
+        session(['voto_chapa_id' => $request->chapa_id]);
 
-        $candidato = Candidato::with('pessoa')->findOrFail($request->candidato_id);
-        return view('confirmarVotoDiretor', compact('candidato'));
-    }
+        $chapa = Chapa::with('diretor.pessoa', 'coordenador1.pessoa', 'coordenador2.pessoa')
+            ->findOrFail($request->chapa_id);
 
-    public function escolhaCoordenador()
-    {
-        $eleitor = Eleitor::findOrFail(session('eleitor_id'));
-        $eleicao = $this->eleicaoAtiva($eleitor);
-
-        $candidatos = Candidato::with('pessoa')
-            ->where('eleicao_id', $eleicao->id)
-            ->where('cargo', 'coordenador')
-            ->get();
-
-        return view('escolhaCoordenador', compact('candidatos'));
-    }
-
-    public function confirmarVotoCoordenador(Request $request)
-    {
-        $request->validate(['candidato_id' => 'required|exists:candidatos,id']);
-        session(['voto_coordenador_id' => $request->candidato_id]);
-
-        $candidato = Candidato::with('pessoa')->findOrFail($request->candidato_id);
-        return view('confirmarVotoCoordenador', compact('candidato'));
+        return view('confirmarVotoChapa', compact('chapa'));
     }
 
     public function registrarVoto()
@@ -67,32 +46,23 @@ class VotoController extends Controller
         $eleitor = Eleitor::findOrFail(session('eleitor_id'));
         $eleicao = $this->eleicaoAtiva($eleitor);
 
-        $diretorId = session('voto_diretor_id');
-        $coordenadorId = session('voto_coordenador_id');
+        $chapaId = session('voto_chapa_id');
 
-        if (!$diretorId || !$coordenadorId) {
-            return redirect()->route('escolhaDiretor');
+        if (!$chapaId) {
+            return redirect()->route('escolhaChapa');
         }
 
         Voto::create([
             'hash' => Str::uuid(),
             'data_voto' => now(),
             'eleicao_id' => $eleicao->id,
-            'candidato_id' => $diretorId,
-            'eleitor_id' => $eleitor->id,
-        ]);
-
-        Voto::create([
-            'hash' => Str::uuid(),
-            'data_voto' => now(),
-            'eleicao_id' => $eleicao->id,
-            'candidato_id' => $coordenadorId,
+            'chapa_id' => $chapaId,
             'eleitor_id' => $eleitor->id,
         ]);
 
         $eleitor->update(['votou' => true]);
 
-        session()->forget(['eleitor_id', 'voto_diretor_id', 'voto_coordenador_id']);
+        session()->forget(['eleitor_id', 'voto_chapa_id']);
 
         return view('votoRegistrado');
     }

@@ -8,6 +8,7 @@ use App\Http\Controllers\CandidatoController;
 use App\Http\Controllers\EleicaoController;
 use App\Http\Controllers\EscolaController;
 use App\Http\Middleware\AdminAutenticado;
+use App\Http\Controllers\ChapaController;
 
 // Público
 Route::get('/', fn() => view('login'));
@@ -20,14 +21,12 @@ Route::post('/logoutAdm', [AdministradorController::class, 'logout'])->name('log
 
 // Área do eleitor (exige login de eleitor)
 Route::middleware('eleitor.autenticado')->group(function () {
-    Route::get('/escolhaDiretor', [VotoController::class, 'escolhaDiretor'])->name('escolhaDiretor');
-    Route::post('/confirmarVotoDiretor', [VotoController::class, 'confirmarVotoDiretor'])->name('confirmarVotoDiretor');
-
-    Route::get('/escolhaCoordenador', [VotoController::class, 'escolhaCoordenador'])->name('escolhaCoordenador');
-    Route::post('/confirmarVotoCoordenador', [VotoController::class, 'confirmarVotoCoordenador'])->name('confirmarVotoCoordenador');
-
-    Route::post('/registrarVoto', [VotoController::class, 'registrarVoto'])->name('registrarVoto');
-    Route::get('/votoRegistrado', fn() => view('votoRegistrado'))->name('votoRegistrado');
+    Route::middleware('eleitor.autenticado')->group(function () {
+        Route::get('/escolhaChapa', [VotoController::class, 'escolhaChapa'])->name('escolhaChapa');
+        Route::post('/confirmarVotoChapa', [VotoController::class, 'confirmarVotoChapa'])->name('confirmarVotoChapa');
+        Route::post('/registrarVoto', [VotoController::class, 'registrarVoto'])->name('registrarVoto');
+        Route::get('/votoRegistrado', fn() => view('votoRegistrado'))->name('votoRegistrado');
+    });
 });
 
 // Área do administrador (exige login de admin)
@@ -48,6 +47,13 @@ Route::middleware('admin.autenticado')->group(function () {
     Route::get('/editarEscola/{id}', [EscolaController::class, 'edit'])->name('editarEscola');
     Route::put('/editarEscola/{id}', [EscolaController::class, 'update'])->name('editarEscola.update');
     Route::delete('/excluirEscola/{id}', [EscolaController::class, 'destroy'])->name('excluirEscola');
+
+    Route::get('/gerenciarChapa', [ChapaController::class, 'index'])->name('gerenciarChapa');
+    Route::get('/adicionarChapa', [ChapaController::class, 'create'])->name('adicionarChapa');
+    Route::post('/adicionarChapa', [ChapaController::class, 'store'])->name('adicionarChapa.store');
+    Route::get('/editarChapa/{id}', [ChapaController::class, 'edit'])->name('editarChapa');
+    Route::put('/editarChapa/{id}', [ChapaController::class, 'update'])->name('editarChapa.update');
+    Route::delete('/excluirChapa/{id}', [ChapaController::class, 'destroy'])->name('excluirChapa');
 
     // Ainda pendentes (views existem, controllers não):
     Route::get('/relatorio', fn() => view('gerarRelatorio'))->name('relatorio');
