@@ -15,7 +15,7 @@
             <div class="offset-md-2 col-md-8">
                 <div class="card">
                     <div class="card-header text-white text-center" style="background-color:#14ae5c;">
-                        <h5 class="mb-0">Chapa {{ $chapa->numero }}</h5>
+                        <h5 class="mb-0">Chapa {{ $chapa->nome }}</h5>
                     </div>
 
                     <div class="card-body" style="background-color:#d3d3d3;">

@@ -13,7 +13,6 @@ return new class extends Migration {
         Schema::create('candidatos', function (Blueprint $table) {
             $table->id();
             $table->string('cargo', 100);
-            $table->integer('numero');
             $table->text('proposta');
             $table->foreignId('eleicao_id')->constrained('eleicoes')->onDelete('cascade');
             $table->foreignId('pessoa_id')->constrained('pessoas')->onDelete('cascade');

@@ -64,34 +64,7 @@
                                                 placeholder="Diretor, Coordenador...">
                                         </div>
                                     </div>
-
-                                    <div class="col-6">
-                                        <div class="mb-3">
-                                            <label for="numero" class="form-label">Número</label>
-                                            <input type="number" name="numero" class="form-control" id="numero"
-                                                value="{{ old('numero', $candidato->numero) }}">
-                                        </div>
-                                    </div>
                                 </div>
-
-                                <div class="mb-3">
-                                    <label for="eleicao_id" class="form-label">Eleição</label>
-                                    <select name="eleicao_id" class="form-control" id="eleicao_id">
-                                        <option value="">Selecione</option>
-                                        @foreach ($eleicoes as $eleicao)
-                                            <option value="{{ $eleicao->id }}" {{ old('eleicao_id', $candidato->eleicao_id) == $eleicao->id ? 'selected' : '' }}>
-                                                {{ $eleicao->escola->nome ?? 'Eleição' }} #{{ $eleicao->id }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="proposta" class="form-label">Proposta</label>
-                                    <textarea name="proposta" class="form-control" id="proposta"
-                                        rows="3">{{ old('proposta', $candidato->proposta) }}</textarea>
-                                </div>
-
                                 <div class="d-flex flex-column align-items-start">
                                     <button type="submit" class="btn btn-primary">Salvar</button>
                                 </div>

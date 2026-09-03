@@ -27,8 +27,8 @@
                                 <div class="row">
                                     <div class="col-6">
                                         <div class="mb-3">
-                                            <label for="numero" class="form-label">Número da Chapa</label>
-                                            <input type="text" name="numero" class="form-control" id="numero" value="{{ old('numero') }}">
+                                            <label for="nome" class="form-label">Nome da Chapa</label>
+                                            <input type="text" name="nome" class="form-control" id="nome" value="{{ old('nome') }}">
                                         </div>
                                     </div>
 
@@ -39,7 +39,7 @@
                                                 <option value="">Selecione</option>
                                                 @foreach ($eleicoes as $eleicao)
                                                     <option value="{{ $eleicao->id }}" {{ old('eleicao_id') == $eleicao->id ? 'selected' : '' }}>
-                                                        {{ $eleicao->escola->nome ?? 'Eleição' }} #{{ $eleicao->id }}
+                                                        {{'Escola' . ' ' . $eleicao->escola->nome ?? 'Eleição' }} #{{ $eleicao->id }}
                                                     </option>
                                                 @endforeach
                                             </select>

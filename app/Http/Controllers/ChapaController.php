@@ -13,29 +13,27 @@ class ChapaController extends Controller
     private function candidatoJaEmChapa($candidatoId, $ignorarChapaId = null)
     {
         return Chapa::where(function ($q) use ($candidatoId) {
-                $q->where('diretor_id', $candidatoId)
-                  ->orWhere('coordenador1_id', $candidatoId)
-                  ->orWhere('coordenador2_id', $candidatoId);
-            })
-            ->when($ignorarChapaId, fn ($q) => $q->where('id', '!=', $ignorarChapaId))
+            $q->where('diretor_id', $candidatoId)
+                ->orWhere('coordenador1_id', $candidatoId)
+                ->orWhere('coordenador2_id', $candidatoId);
+        })
+            ->when($ignorarChapaId, fn($q) => $q->where('id', '!=', $ignorarChapaId))
             ->exists();
     }
 
-    private function candidatosDisponiveis($cargo, $eleicaoId, $ignorarChapaId = null)
+    private function candidatosDisponiveis($cargo, $ignorarChapaId = null)
     {
-        $ocupados = Chapa::when($ignorarChapaId, fn ($q) => $q->where('id', '!=', $ignorarChapaId))
+        $ocupados = Chapa::when($ignorarChapaId, fn($q) => $q->where('id', '!=', $ignorarChapaId))
             ->get()
-            ->flatMap(fn ($c) => [$c->diretor_id, $c->coordenador1_id, $c->coordenador2_id])
+            ->flatMap(fn($c) => [$c->diretor_id, $c->coordenador1_id, $c->coordenador2_id])
             ->filter()
             ->unique();
 
         return Candidato::with('pessoa')
-            ->where('eleicao_id', $eleicaoId)
             ->where('cargo', $cargo)
             ->whereNotIn('id', $ocupados)
             ->get();
     }
-
     public function index()
     {
         $chapas = Chapa::with('eleicao', 'diretor.pessoa', 'coordenador1.pessoa', 'coordenador2.pessoa')->get();
@@ -47,24 +45,19 @@ class ChapaController extends Controller
         $eleicoes = Eleicao::all();
         return view('adicionarChapa', compact('eleicoes'));
     }
-
-    // Chamado via AJAX/reload ao escolher a eleição no formulário, para popular os selects
     public function candidatosPorEleicao(Request $request)
     {
-        $eleicaoId = $request->query('eleicao_id');
-
         return response()->json([
-            'diretores' => $this->candidatosDisponiveis('diretor', $eleicaoId)
-                ->map(fn ($c) => ['id' => $c->id, 'nome' => $c->pessoa->nome]),
-            'coordenadores' => $this->candidatosDisponiveis('coordenador', $eleicaoId)
-                ->map(fn ($c) => ['id' => $c->id, 'nome' => $c->pessoa->nome]),
+            'diretores' => $this->candidatosDisponiveis('diretor')
+                ->map(fn($c) => ['id' => $c->id, 'nome' => $c->pessoa->nome]),
+            'coordenadores' => $this->candidatosDisponiveis('coordenador')
+                ->map(fn($c) => ['id' => $c->id, 'nome' => $c->pessoa->nome]),
         ]);
     }
-
     public function store(Request $request)
     {
         $request->validate([
-            'numero' => 'required|string|max:10',
+            'nome' => 'required|string|max:10',
             'eleicao_id' => 'required|exists:eleicoes,id',
             'diretor_id' => 'required|exists:candidatos,id|different:coordenador1_id|different:coordenador2_id',
             'coordenador1_id' => 'required|exists:candidatos,id|different:coordenador2_id',
@@ -77,7 +70,7 @@ class ChapaController extends Controller
             }
         }
 
-        Chapa::create($request->only('numero', 'eleicao_id', 'diretor_id', 'coordenador1_id', 'coordenador2_id'));
+        Chapa::create($request->only('nome', 'eleicao_id', 'diretor_id', 'coordenador1_id', 'coordenador2_id'));
 
         return redirect()->route('gerenciarChapa')->with('sucesso', 'Chapa cadastrada com sucesso.');
     }
@@ -87,20 +80,19 @@ class ChapaController extends Controller
         $chapa = Chapa::findOrFail($id);
         $eleicoes = Eleicao::all();
 
-        $diretores = $this->candidatosDisponiveis('diretor', $chapa->eleicao_id, $chapa->id)
+        $diretores = $this->candidatosDisponiveis('diretor', $chapa->id)
             ->push($chapa->diretor)->unique('id');
-        $coordenadores = $this->candidatosDisponiveis('coordenador', $chapa->eleicao_id, $chapa->id)
+        $coordenadores = $this->candidatosDisponiveis('coordenador', $chapa->id)
             ->push($chapa->coordenador1)->push($chapa->coordenador2)->unique('id');
 
         return view('editarChapa', compact('chapa', 'eleicoes', 'diretores', 'coordenadores'));
     }
-
     public function update(Request $request, $id)
     {
         $chapa = Chapa::findOrFail($id);
 
         $request->validate([
-            'numero' => 'required|string|max:10',
+            'nome' => 'required|string|max:10',
             'eleicao_id' => 'required|exists:eleicoes,id',
             'diretor_id' => 'required|exists:candidatos,id|different:coordenador1_id|different:coordenador2_id',
             'coordenador1_id' => 'required|exists:candidatos,id|different:coordenador2_id',
@@ -113,7 +105,7 @@ class ChapaController extends Controller
             }
         }
 
-        $chapa->update($request->only('numero', 'eleicao_id', 'diretor_id', 'coordenador1_id', 'coordenador2_id'));
+        $chapa->update($request->only('nome', 'eleicao_id', 'diretor_id', 'coordenador1_id', 'coordenador2_id'));
 
         return redirect()->route('gerenciarChapa')->with('sucesso', 'Chapa atualizada com sucesso.');
     }

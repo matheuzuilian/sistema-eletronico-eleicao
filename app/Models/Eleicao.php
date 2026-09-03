@@ -10,4 +10,9 @@ class Eleicao extends Model
 
     protected $fillable = ['escola_id', 'admin_id', 'data_inicio', 'data_fim', 'status'];
     // resto igual
+
+    public function escola()
+{
+    return $this->belongsTo(Escola::class);
+}
 }

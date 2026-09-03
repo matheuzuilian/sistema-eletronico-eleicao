@@ -17,7 +17,7 @@
                     <div class="card h-100" style="background-color:#d3d3d3;">
                         <img src="{{ asset('images/adicionarcandidato.png') }}" alt="Adicionar Candidato"
                             class="img-candidato mx-auto d-block">
-                        <h4 class="text-center mt-2">Adicionar Candidato</h4>
+                        <h4 class="text-center mt-2">Gerenciar Candidatos</h4>
                     </div>
                 </a>
             </div>

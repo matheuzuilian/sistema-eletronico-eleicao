@@ -13,7 +13,7 @@ return new class extends Migration
 {
     Schema::create('chapas', function (Blueprint $table) {
         $table->id();
-        $table->string('numero', 10);
+        $table->string('nome', 100);
         $table->foreignId('eleicao_id')->constrained('eleicoes')->onDelete('cascade');
         $table->foreignId('diretor_id')->constrained('candidatos')->onDelete('cascade');
         $table->foreignId('coordenador1_id')->constrained('candidatos')->onDelete('cascade');

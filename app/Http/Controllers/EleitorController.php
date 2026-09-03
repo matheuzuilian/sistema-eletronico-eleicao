@@ -65,7 +65,7 @@ class EleitorController extends Controller
         Eleitor::create([
             'matricula' => $request->matricula,
             'tipo' => $request->tipo,
-            'senha' => $request->matricula ?? $request->cpf, // senha gerada automaticamente
+            'senha' => $request->matricula ?? $request->cpf, 
             'votou' => false,
             'pessoa_id' => $pessoa->id,
             'escola_id' => $request->escola_id,

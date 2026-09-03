@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Candidato;
-use App\Models\Eleicao;
 use App\Models\Pessoa;
 use Illuminate\Http\Request;
 
@@ -17,8 +16,7 @@ class CandidatoController extends Controller
 
     public function create()
     {
-        $eleicoes = Eleicao::all();
-        return view('adicionarCandidato', compact('eleicoes'));
+        return view('adicionarCandidato');
     }
 
     public function store(Request $request)
@@ -29,17 +27,12 @@ class CandidatoController extends Controller
             'cpf' => 'required|string|size:11|unique:pessoas,cpf',
             'data_nascimento' => 'required|date',
             'cargo' => 'required|string|max:100',
-            'numero' => 'required|integer',
-            'proposta' => 'required|string',
-            'eleicao_id' => 'required|exists:eleicoes,id',
         ]);
 
         $pessoa = Pessoa::create($request->only('nome', 'email', 'cpf', 'data_nascimento'));
 
         Candidato::create([
             'cargo' => $request->cargo,
-            'numero' => $request->numero,
-            'proposta' => $request->proposta,
             'eleicao_id' => $request->eleicao_id,
             'pessoa_id' => $pessoa->id,
         ]);
@@ -50,8 +43,7 @@ class CandidatoController extends Controller
     public function edit($id)
     {
         $candidato = Candidato::with('pessoa')->findOrFail($id);
-        $eleicoes = Eleicao::all();
-        return view('editarCandidato', compact('candidato', 'eleicoes'));
+        return view('editarCandidato', compact('candidato'));
     }
 
     public function update(Request $request, $id)
@@ -64,18 +56,12 @@ class CandidatoController extends Controller
             'cpf' => 'required|string|size:11|unique:pessoas,cpf,' . $candidato->pessoa_id,
             'data_nascimento' => 'required|date',
             'cargo' => 'required|string|max:100',
-            'numero' => 'required|integer',
-            'proposta' => 'required|string',
-            'eleicao_id' => 'required|exists:eleicoes,id',
         ]);
 
         $candidato->pessoa->update($request->only('nome', 'email', 'cpf', 'data_nascimento'));
 
         $candidato->update([
             'cargo' => $request->cargo,
-            'numero' => $request->numero,
-            'proposta' => $request->proposta,
-            'eleicao_id' => $request->eleicao_id,
         ]);
 
         return redirect()->route('gerenciarCandidato')->with('sucesso', 'Candidato atualizado com sucesso.');

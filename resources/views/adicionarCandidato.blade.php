@@ -33,55 +33,43 @@
                                     <div class="col-6">
                                         <div class="mb-3">
                                             <label for="email" class="form-label">Email</label>
-                                            <input type="email" name="email" class="form-control" id="email" value="{{ old('email') }}">
+                                            <input type="email" name="email" class="form-control" id="email"
+                                                value="{{ old('email') }}">
                                         </div>
                                     </div>
 
                                     <div class="col-6">
                                         <div class="mb-3">
                                             <label for="cpf" class="form-label">CPF</label>
-                                            <input type="text" name="cpf" class="form-control" id="cpf" maxlength="11" value="{{ old('cpf') }}">
+                                            <input type="text" name="cpf" class="form-control" id="cpf" maxlength="11"
+                                                value="{{ old('cpf') }}">
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="mb-3">
                                     <label for="data_nascimento" class="form-label">Data de Nascimento</label>
-                                    <input type="date" name="data_nascimento" class="form-control" id="data_nascimento" value="{{ old('data_nascimento') }}">
+                                    <input type="date" name="data_nascimento" class="form-control" id="data_nascimento"
+                                        value="{{ old('data_nascimento') }}">
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-6">
+                                    <div class="col">
                                         <div class="mb-3">
                                             <label for="cargo" class="form-label">Cargo Pretendido</label>
-                                            <input type="text" name="cargo" class="form-control" id="cargo" value="{{ old('cargo') }}" placeholder="Diretor, Coordenador...">
+                                            <select name="cargo" id="cargo" class="form-control">
+                                                <option value="">Selecione um cargo</option>
+                                                <option value="Diretor" {{ old('cargo') == 'Diretor' ? 'selected' : '' }}>
+                                                    Diretor
+                                                </option>
+                                                <option value="Coordenador" {{ old('cargo') == 'Coordenador' ? 'selected' : '' }}>
+                                                    Coordenador
+                                                </option>
+                                            </select>
                                         </div>
                                     </div>
-
-                                    <div class="col-6">
-                                        <div class="mb-3">
-                                            <label for="numero" class="form-label">Número</label>
-                                            <input type="number" name="numero" class="form-control" id="numero" value="{{ old('numero') }}">
-                                        </div>
-                                    </div>
                                 </div>
 
-                                <div class="mb-3">
-                                    <label for="eleicao_id" class="form-label">Eleição</label>
-                                    <select name="eleicao_id" class="form-control" id="eleicao_id">
-                                        <option value="">Selecione</option>
-                                        @foreach ($eleicoes as $eleicao)
-                                            <option value="{{ $eleicao->id }}" {{ old('eleicao_id') == $eleicao->id ? 'selected' : '' }}>
-                                                {{ $eleicao->escola->nome ?? 'Eleição' }} #{{ $eleicao->id }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="proposta" class="form-label">Proposta</label>
-                                    <textarea name="proposta" class="form-control" id="proposta" rows="3">{{ old('proposta') }}</textarea>
-                                </div>
 
                                 <div class="d-flex flex-column align-items-start">
                                     <button type="submit" class="btn btn-primary">Salvar</button>
