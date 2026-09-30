@@ -1,92 +1,144 @@
-# Sistema de Votação
+# Sistema Eletrônico de Eleição
 
-## Descrição
+Aplicação web em **Laravel** para realizar eleições de **diretor e coordenadores** em escolas públicas. O administrador cadastra escolas, eleitores, candidatos e chapas e abre a votação; o eleitor entra com CPF e senha, escolhe uma chapa, confirma e tem o voto registrado.
 
-O Sistema de Votação é uma aplicação web desenvolvida em Laravel para gerenciar o processo de eleição de diretores e coordenadores. O sistema permite o cadastro de candidatos, realização da votação pelos usuários e visualização de relatórios, oferecendo uma interface simples e intuitiva.
+Projeto de extensão acadêmico, desenvolvido em equipe.
 
-## Tecnologias Utilizadas
+## Funcionalidades
 
-- PHP
-- Laravel
-- Bootstrap 5
-- HTML5
-- CSS3
-- MySQL
+**Eleitor**
+- Login com CPF e senha
+- Visualização das chapas da eleição aberta na sua escola
+- Confirmação do voto antes de registrar
+- Voto único: depois de votar, o eleitor não consegue entrar novamente
+
+**Administrador**
+- Login com CPF e senha
+- CRUD de escolas, eleitores (professor, aluno ou responsável), candidatos e chapas
+- Abertura da votação por escola, com data e hora de início (duração de 24 horas)
+
+**Chapas**
+Cada chapa é formada por **1 diretor e 2 coordenadores**, e o eleitor vota na chapa inteira (um único voto).
+
+## Tecnologias
+
+- PHP 8.2+ e Laravel 12
+- Blade (templates) e Bootstrap 5 (via CDN)
+- MySQL ou SQLite (o `.env.example` vem configurado com SQLite)
+- PHPUnit (configurado, sem testes escritos ainda)
+
+## Pré-requisitos
+
+- PHP 8.2 ou superior
+- Composer
+- MySQL, caso não queira usar SQLite
 
 ## Instalação
 
-### 1. Clone o repositório
-
 ```bash
+# 1. Clonar o repositório
 git clone https://github.com/matheuzuilian/sistema-eletronico-eleicao.git
-```
-
-### 2. Acesse a pasta do projeto
-
-```bash
 cd sistema-eletronico-eleicao
-```
 
-### 3. Instale as dependências
-
-```bash
+# 2. Instalar as dependências
 composer install
-```
 
-### 4. Configure o arquivo `.env`
-
-Copie o arquivo de exemplo:
-
-```bash
+# 3. Criar o arquivo de ambiente e gerar a chave
 cp .env.example .env
-```
-
-Configure as informações do banco de dados no arquivo `.env`.
-
-### 5. Gere a chave da aplicação
-
-```bash
 php artisan key:generate
 ```
 
-### 6. Execute as migrações
+### 4. Configurar o banco de dados
+
+**Opção A: SQLite (padrão, sem instalar nada)**
 
 ```bash
-php artisan migrate
+touch database/database.sqlite
 ```
 
-### 7. Inicie o servidor
+**Opção B: MySQL.** Crie o banco e ajuste o `.env`:
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=eleicao
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+### 5. Criar as tabelas e o administrador inicial
+
+```bash
+php artisan migrate --seed
+```
+
+O seeder cria um administrador para o primeiro acesso:
+
+| Campo | Valor |
+|-------|-------|
+| CPF   | `00000000000` |
+| Senha | `admin123` |
+
+> Essas credenciais servem só para desenvolvimento. Troque-as antes de usar o sistema de verdade.
+
+### 6. Iniciar o servidor
 
 ```bash
 php artisan serve
 ```
 
-O sistema estará disponível em:
-
-```
-http://127.0.0.1:8000
-```
+Acesse `http://127.0.0.1:8000`.
 
 ## Como usar
-## Eleitor
-1. Acesse a tela de login.
-2. Entre no sistema.
-3. Escolha um candidato para Diretor.
-4. Confirme o voto.
-5. Escolha um candidato para Coordenador.
-6. Confirme o voto.
-7. Visualize a confirmação do voto registrado.
 
-## Administrador
-1.Acesse a tela de login
-2. Selecionar a opção desejada
+### Primeiro uso (administrador)
 
-## Estrutura do Projeto
+1. Na tela de login, clique em **Acessar área do Administrador** e entre com as credenciais acima.
+2. Cadastre a **escola** em *Gerenciar Escolas*.
+3. Cadastre os **candidatos** (diretor e coordenadores) em *Gerenciar Candidatos*.
+4. Monte as **chapas** em *Gerenciar Chapas*.
+5. Cadastre os **eleitores** em *Gerenciar Eleitores*. A senha inicial do eleitor é a matrícula ou, se ele não tiver matrícula, o CPF.
+6. Clique em **Iniciar Votação**, escolha a escola e defina a data e a hora de início.
 
-- `app/` → Controllers, Models e regras de negócio.
-- `resources/views/` → Telas da aplicação (Blade).
-- `routes/web.php` → Rotas da aplicação.
-- `public/` → Arquivos públicos, como imagens e CSS.
+### Votação (eleitor)
+
+1. Entre com CPF e senha.
+2. Escolha a chapa.
+3. Confirme o voto.
+4. O sistema registra o voto e exibe a tela de confirmação.
+
+## Estrutura do projeto
+
+```
+app/
+├── Http/
+│   ├── Controllers/    # Administrador, Candidato, Chapa, Eleicao, Eleitor, Escola, Voto
+│   └── Middleware/     # AdminAutenticado, EleitorAutenticado
+└── Models/             # Pessoa, Administrador, Eleitor, Escola, Eleicao, Candidato, Chapa, Voto
+database/
+├── migrations/         # Estrutura do banco
+└── seeders/            # AdminSeeder (administrador inicial)
+resources/views/        # Telas em Blade (login, gerenciamento, votação)
+routes/web.php          # Rotas da aplicação
+public/images/          # Ícones usados nas telas
+```
+
+### Modelo de dados
+
+- **Pessoa**: dados pessoais (nome, e-mail, CPF, data de nascimento), compartilhados por administradores, eleitores e candidatos
+- **Escola**: onde a eleição acontece
+- **Administrador** e **Eleitor**: papéis de uma Pessoa (o eleitor pertence a uma escola)
+- **Eleicao**: votação de uma escola (início, fim e status: `aberta`, `encerrada` ou `aguardando`)
+- **Candidato** e **Chapa**: a chapa reúne 1 diretor e 2 coordenadores
+- **Voto**: liga o eleitor à chapa escolhida, com um hash único
+
+## Status e próximos passos
+
+- [ ] Geração de relatório de resultados (a tela existe, mas ainda não apura os votos)
+- [ ] Criptografar as senhas (hoje ficam salvas e comparadas em texto puro)
+- [ ] Encerramento automático da eleição ao fim do período
+- [ ] Testes automatizados
 
 ## Autores
 
@@ -99,4 +151,4 @@ http://127.0.0.1:8000
 
 ## Licença
 
-Este projeto foi desenvolvido para fins acadêmicos.
+Projeto desenvolvido para fins acadêmicos.
