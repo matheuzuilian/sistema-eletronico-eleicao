@@ -22,7 +22,9 @@
                         <tr>
                             <th>Nome</th>
                             <th>Cargo Pretendido</th>
+                            <th>Escola</th>
                             <th>Ações</th>
+                            
                         </tr>
                     </thead>
                     <tbody>
@@ -30,6 +32,7 @@
                             <tr>
                                 <td>{{ $candidato->pessoa->nome }}</td>
                                 <td>{{ $candidato->cargo }}</td>
+                                <td>{{ $candidato->escola->nome }}</td>
                                 <td>
                                     <a href="{{ route('editarCandidato', ['id' => $candidato->id]) }}"
                                         class="btn btn-sm btn-warning">Editar</a>

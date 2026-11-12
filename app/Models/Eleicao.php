@@ -12,7 +12,7 @@ class Eleicao extends Model
     // resto igual
 
     public function escola()
-{
-    return $this->belongsTo(Escola::class);
-}
+    {
+        return $this->belongsTo(Escola::class);
+    }
 }

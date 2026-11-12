@@ -6,8 +6,7 @@ use App\Models\Candidato;
 use App\Models\Chapa;
 use App\Models\Eleicao;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
-
+use App\Models\Escola;
 class ChapaController extends Controller
 {
     private function candidatoJaEmChapa($candidatoId, $ignorarChapaId = null)
@@ -43,7 +42,8 @@ class ChapaController extends Controller
     public function create()
     {
         $eleicoes = Eleicao::all();
-        return view('adicionarChapa', compact('eleicoes'));
+        $escolas = Escola::all();
+        return view('adicionarChapa', compact('eleicoes', 'escolas'));
     }
     public function candidatosPorEleicao(Request $request)
     {

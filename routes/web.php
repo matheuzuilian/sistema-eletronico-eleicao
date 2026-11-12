@@ -49,7 +49,9 @@ Route::middleware('admin.autenticado')->group(function () {
     Route::get('/editarEscola/{id}', [EscolaController::class, 'edit'])->name('editarEscola');
     Route::put('/editarEscola/{id}', [EscolaController::class, 'update'])->name('editarEscola.update');
     Route::delete('/excluirEscola/{id}', [EscolaController::class, 'destroy'])->name('excluirEscola');
+    Route::get('/eleicoes/{eleicao}/candidatos', [CandidatoController::class, 'porEleicao'])->name('eleicoes.candidatos');
 
+    Route::get('/escolas/{escola}/candidatos', [CandidatoController::class, 'porEscola'])->name('escolas.candidatos');
     Route::get('/gerenciarChapa', [ChapaController::class, 'index'])->name('gerenciarChapa');
     Route::get('/adicionarChapa', [ChapaController::class, 'create'])->name('adicionarChapa');
     Route::post('/adicionarChapa', [ChapaController::class, 'store'])->name('adicionarChapa.store');

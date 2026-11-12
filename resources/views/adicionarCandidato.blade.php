@@ -70,6 +70,18 @@
                                     </div>
                                 </div>
 
+                                <div class="mb-3">
+                                    <label for="escola_id" class="form-label">Escola</label>
+                                    <select name="escola_id" class="form-control" id="escola_id">
+                                        <option value="">Selecione</option>
+                                        @foreach ($escolas as $escola)
+                                            <option value="{{ $escola->id }}" {{ old('escola_id') == $escola->id ? 'selected' : '' }}>
+                                                {{ $escola->nome }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
 
                                 <div class="d-flex flex-column align-items-start">
                                     <button type="submit" class="btn btn-primary">Salvar</button>
