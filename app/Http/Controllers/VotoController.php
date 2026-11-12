@@ -33,14 +33,18 @@ class VotoController extends Controller
     public function confirmarVotoChapa(Request $request)
     {
         $request->validate(['chapa_id' => 'required|exists:chapas,id']);
-        session(['voto_chapa_id' => $request->chapa_id]);
+
+        $eleitor = Eleitor::findOrFail(session('eleitor_id'));
+        $eleicao = $this->eleicaoAtiva($eleitor);
 
         $chapa = Chapa::with('diretor.pessoa', 'coordenador1.pessoa', 'coordenador2.pessoa')
+            ->where('eleicao_id', $eleicao->id)
             ->findOrFail($request->chapa_id);
+
+        session(['voto_chapa_id' => $chapa->id]);
 
         return view('confirmarVotoChapa', compact('chapa'));
     }
-
     public function registrarVoto()
     {
         $eleitor = Eleitor::findOrFail(session('eleitor_id'));
@@ -52,11 +56,17 @@ class VotoController extends Controller
             return redirect()->route('escolhaChapa');
         }
 
+        if ($eleitor->votou) {
+            return redirect()->route('login')->withErrors(['login' => 'Este eleitor já votou.']);
+        }
+
+        $chapa = Chapa::where('eleicao_id', $eleicao->id)->findOrFail($chapaId);
+
         Voto::create([
             'hash' => Str::uuid(),
             'data_voto' => now(),
             'eleicao_id' => $eleicao->id,
-            'chapa_id' => $chapaId,
+            'chapa_id' => $chapa->id,
             'eleitor_id' => $eleitor->id,
         ]);
 

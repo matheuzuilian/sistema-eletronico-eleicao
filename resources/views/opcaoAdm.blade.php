@@ -8,6 +8,7 @@
                 <button type="submit" class="btn btn-danger mb-2">Sair</button>
             </form>
             <a href="{{ route('inicioVotacao') }}" class="btn btn-primary mb-2">Iniciar Votação</a>
+            <a href="{{ route('fimVotacao') }}" class="btn btn-warning mb-2">Finalizar Votação</a>
         </div>
 
         <div class="row mt-5 justify-content-center">

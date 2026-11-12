@@ -11,6 +11,15 @@
             <div class="alert alert-success">{{ session('sucesso') }}</div>
         @endif
 
+        @if (session('senha_gerada'))
+            <div class="alert alert-warning">
+                <strong>Senha gerada:</strong>
+                <span class="fs-5 fw-bold user-select-all">{{ session('senha_gerada') }}</span>
+                <br>
+                <small>Anote ou repasse ao eleitor agora. Ela não será exibida novamente.</small>
+            </div>
+        @endif
+
         <div class="card shadow">
             <div class="card-header bg-success text-white">
                 <h3 class="mb-0">Lista de Eleitores</h3>
@@ -39,9 +48,12 @@
                                 <td>{{ $eleitor->pessoa->email }}</td>
                                 <td>{{ $eleitor->pessoa->data_nascimento->format('d-m-Y') }}</td>
                                 <td>
-                                    <a href="{{ route('editarEleitor', ['id' => $eleitor->id]) }}" class="btn btn-sm btn-warning">Editar</a>
+                                    <a href="{{ route('editarEleitor', ['id' => $eleitor->id]) }}"
+                                        class="btn btn-sm btn-warning">Editar</a>
 
-                                    <form action="{{ route('excluirEleitor', ['id' => $eleitor->id]) }}" method="POST" class="d-inline" onsubmit="return confirm('Tem certeza que deseja excluir este eleitor?')">
+                                    <form action="{{ route('excluirEleitor', ['id' => $eleitor->id]) }}" method="POST"
+                                        class="d-inline"
+                                        onsubmit="return confirm('Tem certeza que deseja excluir este eleitor?')">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-sm btn-danger">Excluir</button>

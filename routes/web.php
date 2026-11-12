@@ -41,6 +41,8 @@ Route::middleware('admin.autenticado')->group(function () {
     Route::delete('/excluirCandidato/{id}', [CandidatoController::class, 'destroy'])->name('excluirCandidato');
     Route::get('/inicioVotacao', [EleicaoController::class, 'create'])->name('inicioVotacao');
     Route::post('/inicioVotacao', [EleicaoController::class, 'store'])->name('inicioVotacao.store');
+    Route::get('/fimVotacao', [EleicaoController::class, 'fimVotacao'])->name('fimVotacao');
+    Route::post('/fimVotacao', [EleicaoController::class, 'finalizarVotacao'])->name('fimVotacao.store');
     Route::get('/gerenciarEscola', [EscolaController::class, 'index'])->name('gerenciarEscola');
     Route::get('/adicionarEscola', [EscolaController::class, 'create'])->name('adicionarEscola');
     Route::post('/adicionarEscola', [EscolaController::class, 'store'])->name('adicionarEscola.store');

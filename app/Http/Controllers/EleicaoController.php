@@ -15,6 +15,42 @@ class EleicaoController extends Controller
         return view('inicioVotacao', compact('escolas'));
     }
 
+    public function fimVotacao()
+    {
+        // só escolas que têm eleição aberta
+        $escolas = Escola::whereIn(
+            'id',
+            Eleicao::where('status', 'aberta')->pluck('escola_id')
+        )->get();
+
+        if ($escolas->isEmpty()) {
+            return redirect()->route('opcaoAdm')->withErrors(['erro' => 'Não há votação em andamento.']);
+        }
+
+        return view('fimVotacao', compact('escolas'));
+    }
+
+    public function finalizarVotacao(Request $request)
+    {
+        $request->validate([
+            'escola_id' => 'required|exists:escolas,id',
+        ]);
+
+        $eleicao = Eleicao::where('escola_id', $request->escola_id)
+            ->where('status', 'aberta')
+            ->first();
+
+        if (!$eleicao) {
+            return back()->withErrors(['escola_id' => 'Não há votação em andamento nessa escola.']);
+        }
+
+        $eleicao->status = 'encerrada';
+        $eleicao->data_fim = now();
+        $eleicao->save();
+
+        return redirect()->route('opcaoAdm')->with('sucesso', 'Votação finalizada com sucesso.');
+    }
+
     public function store(Request $request)
     {
         $request->validate([

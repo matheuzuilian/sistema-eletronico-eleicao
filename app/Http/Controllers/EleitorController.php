@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Eleitor;
 use App\Models\Escola;
 use App\Models\Pessoa;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 class EleitorController extends Controller
 {
     public function autenticar(Request $request)
@@ -19,7 +21,7 @@ class EleitorController extends Controller
             $query->where('cpf', $request->cpf);
         })->first();
 
-        if (!$eleitor || $eleitor->senha !== $request->senha) {
+        if (!$eleitor || !Hash::check($request->senha, $eleitor->senha)) {
             return back()->withErrors(['login' => 'CPF ou senha inválidos.']);
         }
 
@@ -29,7 +31,7 @@ class EleitorController extends Controller
 
         session(['eleitor_id' => $eleitor->id]);
 
-        return redirect()->route('escolhaDiretor');
+        return redirect()->route('escolhaChapa');
     }
     public function index()
     {
@@ -45,6 +47,12 @@ class EleitorController extends Controller
 
     public function store(Request $request)
     {
+        $alfabeto = 'abcdefghjkmnpqrstuvwxyz23456789';
+        $senhaPlana = '';
+        for ($i = 0; $i < 8; $i++) {
+            $senhaPlana .= $alfabeto[random_int(0, strlen($alfabeto) - 1)];
+        }
+
         $request->validate([
             'nome' => 'required|string|max:150',
             'email' => 'required|email|unique:pessoas,email',
@@ -65,13 +73,15 @@ class EleitorController extends Controller
         Eleitor::create([
             'matricula' => $request->matricula,
             'tipo' => $request->tipo,
-            'senha' => $request->matricula ?? $request->cpf, 
+            'senha' => Hash::make($senhaPlana),
             'votou' => false,
             'pessoa_id' => $pessoa->id,
             'escola_id' => $request->escola_id,
         ]);
 
-        return redirect()->route('gerenciarEleitores')->with('sucesso', 'Eleitor cadastrado com sucesso.');
+        return redirect()->route('gerenciarEleitores')
+            ->with('senha_gerada', $senhaPlana)
+            ->with('sucesso', 'Eleitor cadastrado com sucesso.');
     }
 
     public function edit($id)
