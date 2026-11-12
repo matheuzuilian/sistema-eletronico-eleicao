@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('administradores', function (Blueprint $table) {
             $table->id();
-            $table->string('senha'); // armazenar criptografada
+            $table->string('senha'); 
             $table->foreignId('pessoa_id')->constrained('pessoas')->onDelete('cascade');
             $table->timestamps();
         });

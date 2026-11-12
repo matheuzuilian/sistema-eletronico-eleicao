@@ -18,7 +18,7 @@ class AdminSeeder extends Seeder
         ]);
 
         Administrador::create([
-            'senha' => 'admin123', // depois trocamos por hash
+            'senha' => 'admin123', 
             'pessoa_id' => $pessoa->id,
         ]);
     }

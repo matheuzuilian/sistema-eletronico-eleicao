@@ -19,7 +19,7 @@ class CandidatoController extends Controller
     {
         $escolas = Escola::orderBy('nome')->get();
 
-        return view('adicionarCandidato', compact('escolas')); // ajuste o nome da view
+        return view('adicionarCandidato', compact('escolas')); 
     }
     public function store(Request $request)
     {

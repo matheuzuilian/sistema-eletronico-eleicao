@@ -10,7 +10,6 @@ use App\Http\Controllers\EscolaController;
 use App\Http\Middleware\AdminAutenticado;
 use App\Http\Controllers\ChapaController;
 
-// Público
 Route::get('/', fn() => view('login'));
 Route::get('/login', fn() => view('login'))->name('login');
 Route::post('/autenticar', [EleitorController::class, 'autenticar'])->name('autenticar');
@@ -19,7 +18,6 @@ Route::get('/loginAdm', fn() => view('loginAdm'))->name('loginAdm');
 Route::post('/autenticarAdm', [AdministradorController::class, 'autenticar'])->name('autenticarAdm');
 Route::post('/logoutAdm', [AdministradorController::class, 'logout'])->name('logoutAdm');
 
-// Área do eleitor (exige login de eleitor)
 Route::middleware('eleitor.autenticado')->group(function () {
     Route::middleware('eleitor.autenticado')->group(function () {
         Route::get('/escolhaChapa', [VotoController::class, 'escolhaChapa'])->name('escolhaChapa');
@@ -29,7 +27,6 @@ Route::middleware('eleitor.autenticado')->group(function () {
     });
 });
 
-// Área do administrador (exige login de admin)
 Route::middleware('admin.autenticado')->group(function () {
     Route::get('/opcaoAdm', fn() => view('opcaoAdm'))->name('opcaoAdm');
 
@@ -59,7 +56,7 @@ Route::middleware('admin.autenticado')->group(function () {
     Route::put('/editarChapa/{id}', [ChapaController::class, 'update'])->name('editarChapa.update');
     Route::delete('/excluirChapa/{id}', [ChapaController::class, 'destroy'])->name('excluirChapa');
 
-    // Ainda pendentes (views existem, controllers não):
+
     Route::get('/relatorio', fn() => view('gerarRelatorio'))->name('relatorio');
     Route::get('/gerarRelatorio', fn() => view('gerarRelatorio'))->name('gerarRelatorio');
     Route::get('/gerenciarEleitores', [EleitorController::class, 'index'])->name('gerenciarEleitores');

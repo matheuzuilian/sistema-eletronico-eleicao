@@ -6,11 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class Chapa extends Model
 {
-    protected $fillable = ['nome', 'eleicao_id', 'diretor_id', 'coordenador1_id', 'coordenador2_id'];
+    protected $fillable = ['nome', 'eleicao_id', 'escola_id', 'diretor_id', 'coordenador1_id', 'coordenador2_id'];
 
     public function eleicao()
     {
         return $this->belongsTo(Eleicao::class);
+    }
+
+    public function escola()
+    {
+        return $this->belongsTo(Escola::class);
     }
 
     public function diretor()

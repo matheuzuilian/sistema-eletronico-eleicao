@@ -13,7 +13,7 @@ class EleitorSeeder extends Seeder
     public function run(): void
     {
         $escola = Escola::first() ?? Escola::create([
-            'nome' => 'Escola Teste', // ajuste aos campos da sua tabela escolas
+            'nome' => 'Escola Teste', 
         ]);
 
         $pessoa = Pessoa::create([

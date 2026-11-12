@@ -23,7 +23,6 @@ class Candidato extends Model
         return $this->belongsTo(Eleicao::class);
     }
 
-    // candidatos de uma escola (usado ao montar a chapa)
     public function scopeDaEscola($query, $escolaId)
     {
         return $query->where('escola_id', $escolaId);

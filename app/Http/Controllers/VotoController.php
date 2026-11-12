@@ -24,7 +24,7 @@ class VotoController extends Controller
         $eleicao = $this->eleicaoAtiva($eleitor);
 
         $chapas = Chapa::with('diretor.pessoa', 'coordenador1.pessoa', 'coordenador2.pessoa')
-            ->where('eleicao_id', $eleicao->id)
+            ->where('escola_id', $eleicao->escola_id)
             ->get();
 
         return view('escolhaChapa', compact('chapas'));
@@ -38,7 +38,7 @@ class VotoController extends Controller
         $eleicao = $this->eleicaoAtiva($eleitor);
 
         $chapa = Chapa::with('diretor.pessoa', 'coordenador1.pessoa', 'coordenador2.pessoa')
-            ->where('eleicao_id', $eleicao->id)
+            ->where('escola_id', $eleicao->escola_id)
             ->findOrFail($request->chapa_id);
 
         session(['voto_chapa_id' => $chapa->id]);
@@ -60,7 +60,7 @@ class VotoController extends Controller
             return redirect()->route('login')->withErrors(['login' => 'Este eleitor já votou.']);
         }
 
-        $chapa = Chapa::where('eleicao_id', $eleicao->id)->findOrFail($chapaId);
+        $chapa = Chapa::where('escola_id', $eleicao->escola_id)->findOrFail($chapaId);
 
         Voto::create([
             'hash' => Str::uuid(),

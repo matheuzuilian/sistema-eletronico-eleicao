@@ -7,6 +7,7 @@ use App\Models\Chapa;
 use App\Models\Eleicao;
 use Illuminate\Http\Request;
 use App\Models\Escola;
+use Illuminate\Validation\Rule;
 class ChapaController extends Controller
 {
     private function candidatoJaEmChapa($candidatoId, $ignorarChapaId = null)
@@ -57,22 +58,38 @@ class ChapaController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nome' => 'required|string|max:10',
-            'eleicao_id' => 'required|exists:eleicoes,id',
-            'diretor_id' => 'required|exists:candidatos,id|different:coordenador1_id|different:coordenador2_id',
-            'coordenador1_id' => 'required|exists:candidatos,id|different:coordenador2_id',
-            'coordenador2_id' => 'required|exists:candidatos,id',
+            'nome' => 'required|string|max:255',
+            'escola_id' => 'required|exists:escolas,id',
+            'diretor_id' => [
+                'required',
+                Rule::exists('candidatos', 'id')
+                    ->where('escola_id', $request->escola_id)
+                    ->where('cargo', 'diretor')
+            ],
+            'coordenador1_id' => [
+                'required',
+                'different:coordenador2_id',
+                Rule::exists('candidatos', 'id')
+                    ->where('escola_id', $request->escola_id)
+                    ->where('cargo', 'coordenador')
+            ],
+            'coordenador2_id' => [
+                'required',
+                Rule::exists('candidatos', 'id')
+                    ->where('escola_id', $request->escola_id)
+                    ->where('cargo', 'coordenador')
+            ],
         ]);
 
-        foreach (['diretor_id', 'coordenador1_id', 'coordenador2_id'] as $campo) {
-            if ($this->candidatoJaEmChapa($request->$campo)) {
-                return back()->withErrors([$campo => 'Este candidato já está em outra chapa.'])->withInput();
-            }
-        }
+        Chapa::create($request->only([
+            'nome',
+            'escola_id',
+            'diretor_id',
+            'coordenador1_id',
+            'coordenador2_id',
+        ]));
 
-        Chapa::create($request->only('nome', 'eleicao_id', 'diretor_id', 'coordenador1_id', 'coordenador2_id'));
-
-        return redirect()->route('gerenciarChapa')->with('sucesso', 'Chapa cadastrada com sucesso.');
+        return redirect()->route('gerenciarChapa');
     }
 
     public function edit($id)

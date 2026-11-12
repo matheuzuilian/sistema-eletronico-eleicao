@@ -52,21 +52,21 @@
                                 <div class="mb-3">
                                     <label for="diretor_id" class="form-label">Diretor</label>
                                     <select name="diretor_id" class="form-control" id="diretor_id">
-                                        <option value="">Selecione a eleição primeiro</option>
+                                        <option value="">Selecione a escola primeiro</option>
                                     </select>
                                 </div>
 
                                 <div class="mb-3">
                                     <label for="coordenador1_id" class="form-label">Coordenador 1</label>
                                     <select name="coordenador1_id" class="form-control" id="coordenador1_id">
-                                        <option value="">Selecione a eleição primeiro</option>
+                                        <option value="">Selecione a escola primeiro</option>
                                     </select>
                                 </div>
 
                                 <div class="mb-3">
                                     <label for="coordenador2_id" class="form-label">Coordenador 2</label>
                                     <select name="coordenador2_id" class="form-control" id="coordenador2_id">
-                                        <option value="">Selecione a eleição primeiro</option>
+                                        <option value="">Selecione a escola primeiro</option>
                                     </select>
                                 </div>
                                 <div class="d-flex flex-column align-items-start">
@@ -88,7 +88,6 @@
                 coordenador1: document.getElementById('coordenador1_id'),
                 coordenador2: document.getElementById('coordenador2_id'),
             };
-            // valores antigos, para manter a seleção quando a validação falha
             const antigos = {
                 diretor: '{{ old('diretor_id') }}',
                 coordenador1: '{{ old('coordenador1_id') }}',
@@ -127,7 +126,7 @@
 
             escolaSelect.addEventListener('change', () => carregar(escolaSelect.value, false));
 
-            // se voltou de um erro de validação, recarrega já com a escola escolhida
+
             if (escolaSelect.value) carregar(escolaSelect.value, true);
         });
     </script>
