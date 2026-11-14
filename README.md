@@ -67,18 +67,25 @@ DB_USERNAME=root
 DB_PASSWORD=
 ```
 
-### 5. Criar as tabelas e o administrador inicial
+### 5. Criar as tabelas e o administrador inicial e o eleitor
 
 ```bash
 php artisan migrate --seed
 ```
 
-O seeder cria um administrador para o primeiro acesso:
+O seeder cria um administrador para o primeiro acesso e um eleitor de teste:
 
+--- ADM ---
 | Campo | Valor |
 |-------|-------|
 | CPF   | `00000000000` |
 | Senha | `admin123` |
+
+--- Eleitor ---
+| Campo | Valor |
+|-------|-------|
+| CPF   | `11111111111` |
+| Senha | `eleitor123` |
 
 > Essas credenciais servem só para desenvolvimento. Troque-as antes de usar o sistema de verdade.
 
